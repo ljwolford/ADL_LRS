@@ -1,7 +1,7 @@
 import json
 import uuid
 import copy
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from django.http import HttpResponse, HttpResponseNotFound, JsonResponse
 from django.conf import settings
@@ -14,7 +14,7 @@ from ..managers.ActivityStateManager import ActivityStateManager
 from ..managers.AgentProfileManager import AgentProfileManager
 from ..managers.StatementManager import StatementManager
 from ..tasks import check_activity_metadata, check_statement_hooks
-
+from .  import convert_to_datetime_object
 
 def process_statement(stmt, auth, payload_sha2s):
     # Add id to statement if not present
@@ -208,6 +208,9 @@ def statements_get(req_dict):
                 stmt_dict, True)
             resp = HttpResponse(stmt_result, content_type=mime_type,
                                 status=200)
+
+            st_time = st.stored + timedelta(seconds=30)
+            resp['X-Experience-API-Consistent-Through'] = str(st_time).replace(' ', 'T')
         else:
             stmt_result = json.dumps(stmt_dict, sort_keys=False)
             resp = HttpResponse(

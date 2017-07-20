@@ -8,5 +8,6 @@ class XAPIConsistentThrough(object):
 
     def process_response(self, request, response):
         time = timezone.now() - timedelta(seconds=3)
-        response['X-Experience-API-Consistent-Through'] = time.isoformat()
+        if 'X-Experience-API-Consistent-Through' not in response:
+        	response['X-Experience-API-Consistent-Through'] = time.isoformat()
         return response
