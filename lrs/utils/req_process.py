@@ -210,11 +210,11 @@ def statements_get(req_dict):
             resp = HttpResponse(stmt_result, content_type=mime_type,
                                 status=200)
 
-            new_time = st.stored - (timedelta(seconds=30) - (timezone.now()- st.stored))
+            new_time = st.stored - (timedelta(seconds=30) - (timezone.now() - st.stored))
             resp['X-Experience-API-Consistent-Through'] = str(new_time).replace(' ', 'T')
 
 
-            if timezone.now() < new_time:
+            if new_time < st.stored:
                 resp = HttpResponseNotFound()
                 resp['X-Experience-API-Consistent-Through'] = str(new_time).replace(' ', 'T')
                 return resp
