@@ -215,7 +215,9 @@ def statements_get(req_dict):
 
 
             if timezone.now() > new_time:
-                return HttpResponseNotFound()
+                resp = HttpResponseNotFound()
+                resp['X-Experience-API-Consistent-Through'] = str(new_time).replace(' ', 'T')
+                return resp
 
         else:
             stmt_result = json.dumps(stmt_dict, sort_keys=False)
