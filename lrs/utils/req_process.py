@@ -211,6 +211,10 @@ def statements_get(req_dict):
 
             st_time = st.stored + timedelta(seconds=30)
             resp['X-Experience-API-Consistent-Through'] = str(st_time).replace(' ', 'T')
+
+            if datetime.now() > st_time:
+                return HttpResponseNotFound()
+
         else:
             stmt_result = json.dumps(stmt_dict, sort_keys=False)
             resp = HttpResponse(
