@@ -210,7 +210,7 @@ def statements_get(req_dict):
             resp = HttpResponse(stmt_result, content_type=mime_type,
                                 status=200)
 
-            new_time = st.stored - timedelta(seconds=30) + (st.stored - timezone.now())
+            new_time = st.stored - (timedelta(seconds=30) - (st.stored - timezone.now()))
             resp['X-Experience-API-Consistent-Through'] = str(new_time).replace(' ', 'T')
 
 
