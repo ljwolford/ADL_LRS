@@ -6,6 +6,7 @@ from datetime import datetime, timedelta
 from django.http import HttpResponse, HttpResponseNotFound, JsonResponse
 from django.conf import settings
 from django.utils.timezone import utc
+from django.utils import timezone
 
 from retrieve_statement import complex_get, parse_more_request
 from ..models import Statement, Agent, Activity
@@ -209,10 +210,11 @@ def statements_get(req_dict):
             resp = HttpResponse(stmt_result, content_type=mime_type,
                                 status=200)
 
-            st_time = st.stored + timedelta(seconds=30)
-            resp['X-Experience-API-Consistent-Through'] = str(st_time).replace(' ', 'T')
+            new_time = st.stored - timedelta(seconds=30) + (st.stored - timezone.now())
+            resp['X-Experience-API-Consistent-Through'] = str(new_time).replace(' ', 'T')
 
-            if datetime.now() > st_time:
+
+            if timezone.now() > new_time:
                 return HttpResponseNotFound()
 
         else:
