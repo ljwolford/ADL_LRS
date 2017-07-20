@@ -214,7 +214,7 @@ def statements_get(req_dict):
             resp['X-Experience-API-Consistent-Through'] = str(new_time).replace(' ', 'T')
 
 
-            if timezone.now() > new_time:
+            if timezone.now() < new_time:
                 resp = HttpResponseNotFound()
                 resp['X-Experience-API-Consistent-Through'] = str(new_time).replace(' ', 'T')
                 return resp
